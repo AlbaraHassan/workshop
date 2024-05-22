@@ -15,6 +15,6 @@ export class JwtHelper {
         token?: string
     ): null | jwt.JwtPayload | string | undefined {
         if (!token) return;
-        return jwt.decode(token)
+        return jwt.decode(token.includes('Bearer') ? token?.split(' ')[1] : token)
     }
 }
