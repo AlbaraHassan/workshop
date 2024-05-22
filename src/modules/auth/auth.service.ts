@@ -1,9 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { UserCreateDTO, UserLoginDTO } from "../user/dtos/user.dto";
+import { UserCreateDTO } from "../user/dtos/userCreate.dto";
 import * as bcrypt from 'bcrypt';
 import { UserService } from "../user/user.service";
 import { User } from "../user/schemas/user.schema";
 import { JwtHelper } from "src/core/helpers/jwt.helper";
+import { UserLoginDTO } from "../user/dtos/userLogin.dto";
+import { ObjectId } from "mongoose";
 
 @Injectable()
 export class AuthService {
@@ -11,14 +13,14 @@ export class AuthService {
         private readonly jwt: JwtHelper
     ) { }
 
-    private async validate({ password: userPassword, email, _id, name }: User, password: string): Promise<string> {
+    private async validate({ password: userPassword, email, _id, name }: User & { _id: ObjectId }, password: string): Promise<string> {
         if (!(await bcrypt.compare(password, userPassword))) throw new HttpException("Wrong credintials", HttpStatus.FORBIDDEN)
 
         return this.jwt.sign({ _id, email, name })
     }
 
     async login({ email, password }: UserLoginDTO) {
-        const user = await this.service.getByEmail(email)
+        const user = await this.service.getByEmail(email) as unknown as User & { _id: ObjectId }
         if (!user) {
             throw new HttpException("User does not exist", HttpStatus.FORBIDDEN)
         }
