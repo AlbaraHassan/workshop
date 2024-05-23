@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { JwtPayload } from 'jsonwebtoken';
 import { ContextService } from '../context/context.service';
 import { JwtHelper } from '../helpers/jwt.helper';
+
+
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -20,8 +21,7 @@ export class AuthGuard implements CanActivate {
   private getAuthHeader(request: any) {
     const authHeader = request.headers['authorization'];
     const token = this.jwt.decode(authHeader) as JwtPayload;
-    const currentTime = Date.now() / 1000;
-    if (!token || (token.exp && token.exp < currentTime)) {
+    if (!token) {
       throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
     }
     return token;

@@ -14,12 +14,22 @@ export class BlogRepository {
     }
 
     async get(id: string) {
-        return this.blog.findOne({ _id: new Types.ObjectId(id) }).populate('createdBy', ['_id', 'name'])
+        return this.blog.findOne({ _id: new Types.ObjectId(id) }).populate([
+            { path: 'createdBy', select: ['_id', 'name'] },
+            {
+              path: 'comments',
+              populate: {
+                path: 'createdBy',
+                select: ['_id', 'name']
+              },
+              select: ['content', 'createdBy']
+            }
+          ])
     }
 
     async getAll(search?: string) {
         return this.blog.find(search && {
             $text: {$search: search}
-        }).populate('createdBy', ['_id', 'name'])
+        }).populate({path: 'createdBy', select:['_id', 'name']})
     }
 }

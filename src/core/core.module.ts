@@ -4,12 +4,13 @@ import { UserRepository } from "./repositories/userRespository.service";
 import { JwtHelper } from "./helpers/jwt.helper";
 import { ContextService } from "./context/context.service";
 import { BlogRepository } from "./repositories/blogRepository.service";
+import { CommentRepository } from "./repositories/commentRepository.service";
 
 @Module({
     imports: [
         RepositoryModule,
     ],
-    providers: [UserRepository, BlogRepository, JwtHelper, ContextService],
-    exports: [UserRepository, BlogRepository, JwtHelper, ContextService]
+    providers: [UserRepository, BlogRepository, CommentRepository, JwtHelper, ContextService],
+    exports: [UserRepository, BlogRepository, CommentRepository, JwtHelper, ContextService]
 })
 export class CoreModule { }

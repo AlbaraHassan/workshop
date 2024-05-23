@@ -14,12 +14,15 @@ export class Blog {
 
   @Prop()
   content: string;
-  
+
   @Prop({type: Date, default: Date.now})
   createdAt: Date
 
   @Prop({ type: 'ObjectId', ref: 'User' })
   createdBy: ObjectId;
+
+  @Prop({ type: ['ObjectId'], ref: 'Comment', default: [] })
+  comments: ObjectId[];
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog).index({title: 'text', header: 'text'});
